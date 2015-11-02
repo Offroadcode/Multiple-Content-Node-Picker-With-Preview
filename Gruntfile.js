@@ -118,18 +118,19 @@ module.exports = function(grunt) {
       tmp: ['tmp'],
       html: [
         'PreviewPicker/views/*.html',
-        '!PrevewPicker/views/PreviewPickerEditorView.html'
+        '!PreviewPicker/views/PreviewPickerEditorView.html'
         ],
       js: [
         'PreviewPicker/controllers/*.js',
-        '!PreviewPicker/controllers/preview.picker.editor.controller.js'
+		'PreviewPicker/models/*.js',
+        '!PreviewPicker/controllers/preview.picker.editor.controller.js',
+		'!PreviewPicker/models/preview.picker.editor.models.js'
       ],
       css: [
         'PreviewPicker/css/*.css',
         '!PreviewPicker/css/previewPicker.css'
       ]
     }
-  }
 
   });
 
