@@ -22,6 +22,10 @@ module.exports = function(grunt) {
         files: ['PreviewPicker/**/*.html'],
         tasks: ['copy:html']
       },
+	  sass: {
+		files: ['PreviewPicker/**/*.scss'],
+		tasks: ['sass']
+	  },
 	  css: {
 		files: ['PreviewPicker/**/*.css'],
 		tasks: ['copy:css']
@@ -112,6 +116,17 @@ module.exports = function(grunt) {
         src: ['app/**/*.js', 'lib/**/*.js']
       }
   },
+  
+  sass: {
+		dist: {
+			options: {
+				style: 'compressed'
+			},
+			files: {
+				'PreviewPicker/css/previewPicker.css': 'PreviewPicker/sass/previewPicker.scss'
+			}
+		}
+	},
 
   clean: {
       build: '<%= grunt.config("basePath").substring(0, 4) == "dist" ? "dist/**/*" : "null" %>',
@@ -129,11 +144,15 @@ module.exports = function(grunt) {
       css: [
         'PreviewPicker/css/*.css',
         '!PreviewPicker/css/previewPicker.css'
-      ]
+      ],
+	  sass: [
+		'PreviewPicker/sass/*.scss',
+		'!PreviewPicker/sass/previewPicker.scss'
+	  ]
     }
 
   });
 
-  grunt.registerTask('default', ['concat', 'copy:html', 'copy:manifest', 'copy:css', 'clean:html', 'clean:js', 'clean:css']);
+  grunt.registerTask('default', ['concat', 'sass:dist', 'copy:html', 'copy:manifest', 'copy:css', 'clean:html', 'clean:js', 'clean:sass', 'clean:css']);
   grunt.registerTask('umbraco', ['clean:tmp', 'default', 'copy:umbraco', 'umbracoPackage', 'clean:tmp']);
 };
