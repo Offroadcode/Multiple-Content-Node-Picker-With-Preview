@@ -1,0 +1,17 @@
+{
+	propertyEditors: [{
+		name: "Multi-Node Tree Picker with Preview",
+		alias: "MultiNodeTreePicker.Preview",
+		editor: {
+			view: "~/app_plugins/PreviewPicker/views/PreviewPickerView.html",
+			valueType: "JSON",
+			hideLabel: true
+		}
+	}],
+	javascript: [
+		"~/app_plugins/PreviewPicker/js/previewPicker.js"
+	],
+	css : [
+		"~/app_plugins/PreviewPicker/css/previewPicker.css"
+	]
+}
