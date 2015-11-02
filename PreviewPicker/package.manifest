@@ -5,7 +5,46 @@
 		editor: {
 			view: "~/app_plugins/PreviewPicker/views/PreviewPickerView.html",
 			valueType: "JSON",
-			hideLabel: true
+		},
+		prevalues: {
+		    fields: [
+		        {
+		            label: "Start Node",
+		            description: "Choose a start node to limit this picker to",
+		            key: "startNode",
+		            view: "treepicker"
+		        },
+		        {
+		            label: "Allowed DocType",
+		            description: "Select a single doctype to be used for the preview panel",
+		            key: "doctype",
+		            view: "textstring"
+		        },
+				{
+		            label: "Preview Image",
+		            description: "The property name of a single Media Picker property on the selected DocType to be used on this preview",
+		            key: "image",
+		            view: "textstring"
+		        },
+				{
+		            label: "Preview Fields",
+		            description: "A comma separated list of textstring, textarea, or richtext editor property names to be displayed in the order they're listed on the preview pane.",
+		            key: "properties",
+		            view: "textstring"
+		        },
+				{
+		            label: "Minimum Number of Items",
+					description: "",
+		            key: "minimum",
+		            view: "number"
+		        },
+				{
+		            label: "Maximum Number of Items",
+					description: "Enter 0 for unlimited",
+		            key: "maximum",
+		            view: "number"
+		        }
+		    ]
 		}
 	}],
 	javascript: [
