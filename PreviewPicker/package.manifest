@@ -3,7 +3,7 @@
 		name: "Multi-Node Tree Picker with Preview",
 		alias: "MultiNodeTreePicker.Preview",
 		editor: {
-			view: "~/app_plugins/PreviewPicker/views/PreviewPickerView.html",
+			view: "~/app_plugins/PreviewPicker/views/PreviewPickerEditorView.html",
 			valueType: "JSON",
 		},
 		prevalues: {

@@ -1,3 +1,24 @@
 <div ng-controller="preview.picker.editor.controller" class="preview-picker">
-
+    <div class="preview">
+        <!-- TODO: Add sorting and deletion. Sorting only if it isn't complicated -->
+        <div class="settings">
+			<button type="button" class="btn btn-small"><i class="icon-arrow-up"></i></button>
+			<button type="button" class="btn btn-small"><i class="icon-arrow-down"></i></button>
+			<button type="button" class="btn btn-danger btn-small"><i class="icon-trash"></i></button>
+		</div>
+        <img src="http://lorempixel.com/200/200/people/" alt="This is a placeholder" />
+        <div class="preview-info">
+            <h3><input type="text" value="Page Name" /></h3>
+            <p class="textstring"><input type="text" placeholder="Textfield 1" /></p>
+            <p class="textarea"><textarea>Textfield 2</textarea></p>
+            <div class="rte">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ultricies dui at diam sagittis fringilla. Vivamus odio dolor, sodales vel finibus in, aliquam sed mauris. Quisque lectus mi, dapibus sed auctor sed, aliquet vel diam. Aenean laoreet urna nunc, elementum facilisis ante scelerisque a. Sed vulputate posuere massa, ac commodo magna ultrices dignissim. Proin dictum aliquet scelerisque.</p>
+                <p>Aenean consequat metus et urna tristique suscipit. Fusce sodales porttitor orci in lacinia. Nulla imperdiet cursus odio, et molestie sem viverra quis. Donec vulputate quam eu faucibus sodales. Maecenas blandit ultrices suscipit. Quisque in varius ipsum. Praesent finibus justo et accumsan varius.</p>
+            </div>
+        </div>
+    </div>
+    <!-- TODO: Display the add button if there are less than the maximum allowed items. Should open the content picker dialogue -->
+    <div class="usky-grid">
+		<button type="button" class="iconBox"><i class="icon-add"></i></button>
+	</div>
 </div>

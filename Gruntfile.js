@@ -24,7 +24,7 @@ module.exports = function(grunt) {
       },
 	  sass: {
 		files: ['PreviewPicker/**/*.scss'],
-		tasks: ['sass']
+		tasks: ['sass', 'copy:css']
 	  },
 	  css: {
 		files: ['PreviewPicker/**/*.css'],
