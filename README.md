@@ -8,6 +8,37 @@ Install the selected release through the Umbraco package installer or download a
 
 After installing the package, create a new DataType and select "Multi-Node Content Picker with Preview" from the property editor dropdown, then add it to a DocType of your choice.
 
+### Using in a View
+
+This property editor renders it's data in the same way as a Multi-Node Treepicker - the IDs of the content items selected. Therefore, you render it in the same way.
+
+#### Single Node
+
+	if(Model.Content.HasProperty("previewItem") && Model.Content.HasValue("previewItem") {
+    	
+		var item = Umbraco.TypedContent(Model.Content.GetPropertyValue("previewItem"));
+		
+		if(item != null) {
+			@* item is rendered as IPublishedContent *@
+			<h2>@item.Name</h2>
+		}
+    }
+
+#### Multi-Node
+
+	if(Model.Content.HasProperty("previewItems") && Model.Content.HasValue("previewItems") {
+		
+		foreach(var id in Model.Content.GetPropertyValue<string[]>("previewItems") {
+			
+			var item = Umbraco.TypedContent(id);
+
+			if(item != null) {
+		        @* item is rendered as IPublishedContent *@
+		        <h2>@item.Name</h2>
+		    }
+		}
+	}
+
 ## Contribute
 
 Want to contribute to the Multiple Content Picker with Preview package? You'll want to use Grunt (our task runner) to help you integrate with a local copy of Umbraco.
