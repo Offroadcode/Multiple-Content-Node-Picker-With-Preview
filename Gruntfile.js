@@ -43,7 +43,7 @@ module.exports = function(grunt) {
       dist: {
         src: [
             'PreviewPicker/preview.picker.namespaces.js',
-            'PreviewPicker/models/preview.picker.models.js',
+            'PreviewPicker/models/preview.picker.editor.models.js',
             'PreviewPicker/controllers/preview.picker.editor.controller.js'
         ],
         dest: '<%= basePath %>/js/previewPicker.js'
