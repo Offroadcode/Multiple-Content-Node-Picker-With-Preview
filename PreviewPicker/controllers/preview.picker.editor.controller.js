@@ -7,8 +7,17 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 	* @description Triggered on the controller loaded, kicks off any initialization functions.
 	*/
 	$scope.init = function() {
-		
+		$scope.setVariables();
+		console.info('config', $scope.model.config);
 	};
+
+	$scope.setVariables = function() {
+
+	};
+
+	// Event Handler Methods /////////////////////////////////////////////////////
+
+	// Helper Methods ////////////////////////////////////////////////////////////
 
 	// Call $scope.init() ////////////////////////////////////////////////////////
 

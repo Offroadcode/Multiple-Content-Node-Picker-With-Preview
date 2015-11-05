@@ -14,6 +14,10 @@ module.exports = function(grunt) {
         spawn: false,
         atBegin: true
       },
+      dll: {
+        files: ['PreviewPicker/Umbraco/PreviewPicker/**/*.cs'] ,
+        tasks: ['msbuild:dist', 'copy:dll']
+      },	  
       js: {
         files: ['PreviewPicker/**/*.js'],
         tasks: ['concat:dist']
@@ -44,6 +48,8 @@ module.exports = function(grunt) {
         src: [
             'PreviewPicker/preview.picker.namespaces.js',
             'PreviewPicker/models/preview.picker.editor.models.js',
+			'PreviewPicker/resources/doctype.selector.resource.js',
+			'PreviewPicker/controllers/doctype.selector.controller.js',
             'PreviewPicker/controllers/preview.picker.editor.controller.js'
         ],
         dest: '<%= basePath %>/js/previewPicker.js'
@@ -51,9 +57,16 @@ module.exports = function(grunt) {
     },
 
     copy: {
+        dll: {
+            cwd: 'PreviewPicker/Umbraco/PreviewPicker/bin/debug/',
+            src: 'PreviewPicker.dll',
+            dest: '<%= dest %>/bin/',
+            expand: true
+        },	
         html: {
             cwd: 'PreviewPicker/views/',
             src: [
+				'DoctypeSelectorView.html',
                 'PreviewPickerEditorView.html'
             ],
             dest: '<%= basePath %>/views/',
@@ -127,17 +140,39 @@ module.exports = function(grunt) {
 			}
 		}
 	},
+	
+  msbuild: {
+      options: {
+        stdout: true,
+        verbosity: 'quiet',
+        maxCpuCount: 4,
+        version: 4.0,
+        buildParameters: {
+          WarningLevel: 2,
+          NoWarn: 1607
+        }
+    },
+    dist: {
+        src: ['PreviewPicker/Umbraco/PreviewPicker/PreviewPicker.csproj'],
+        options: {
+            projectConfiguration: 'Debug',
+            targets: ['Clean', 'Rebuild'],
+        }
+    }
+  },
 
   clean: {
       build: '<%= grunt.config("basePath").substring(0, 4) == "dist" ? "dist/**/*" : "null" %>',
       tmp: ['tmp'],
       html: [
         'PreviewPicker/views/*.html',
+		'!PreviewPicker/views/DoctypeSelectorView.html',
         '!PreviewPicker/views/PreviewPickerEditorView.html'
         ],
       js: [
         'PreviewPicker/controllers/*.js',
 		'PreviewPicker/models/*.js',
+		'!PreviewPicker/controllers/doctype.selector.controller.js',
         '!PreviewPicker/controllers/preview.picker.editor.controller.js',
 		'!PreviewPicker/models/preview.picker.editor.models.js'
       ],
@@ -153,6 +188,6 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('default', ['concat', 'sass:dist', 'copy:html', 'copy:manifest', 'copy:css', 'clean:html', 'clean:js', 'clean:sass', 'clean:css']);
+  grunt.registerTask('default', ['concat', 'sass:dist', 'copy:html', 'copy:manifest', 'copy:css', 'msbuild:dist', 'copy:dll', 'clean:html', 'clean:js', 'clean:sass', 'clean:css']);
   grunt.registerTask('umbraco', ['clean:tmp', 'default', 'copy:umbraco', 'umbracoPackage', 'clean:tmp']);
 };

@@ -18,7 +18,7 @@
 		            label: "Allowed DocType",
 		            description: "Select a single doctype to be used for the preview panel",
 		            key: "doctype",
-		            view: "textstring"
+		            view: "~/app_plugins/PreviewPicker/views/DoctypeSelectorView.html"
 		        },
 				{
 		            label: "Preview Image",

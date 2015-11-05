@@ -4,3 +4,7 @@ tmp/
 pkg/
 Umbraco.Test/
 .sass-cache/
+PreviewPicker/Umbraco/packages/
+PreviewPicker/Umbraco/PreviewPicker/packages/
+PreviewPicker/Umbraco/PreviewPicker/bin/
+PreviewPicker/Umbraco/PreviewPicker/obj/
