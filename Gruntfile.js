@@ -49,6 +49,7 @@ module.exports = function(grunt) {
             'PreviewPicker/preview.picker.namespaces.js',
             'PreviewPicker/models/preview.picker.editor.models.js',
 			'PreviewPicker/resources/doctype.selector.resource.js',
+			'PreviewPicker/resources/image.resource.js',
 			'PreviewPicker/controllers/doctype.selector.controller.js',
             'PreviewPicker/controllers/preview.picker.editor.controller.js'
         ],
