@@ -41,47 +41,21 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 	};
 
 	/**
-	* @method updateList
-	* @param {array of previewPicker.Models.PickerNode} children
-	* @description Update the selected list with any new data from the connected nodes.
-	*/
-	$scope.updateList = function(children) {
-		if (children && children.length > 0) {
-			if ($scope.list && $scope.list.length > 0) {
-				var updatedList = [];
-				$scope.list.forEach(function(listItem) {
-					children.forEach(function(child) {
-						if (child.id == listItem.id) {
-							listItem.properties = child.properties;
-							updatedList.push(new previewPicker.Models.PreviewNode(listItem));
-						}
-					});
-				});
-				$scope.list = updatedList;
-				$scope.model.value.list = $scope.list;
-				for (var i = 0; i < $scope.list.length; i++) {
-					$scope.addThumbnailToNode(i);
-				}
-			}
-		}
-	};
-
-	/**
 	* @method setVariables
 	* @description Sets the initial state for the $scope variables for the controller.
 	*/
 	$scope.setVariables = function() {
 		$scope.config = new previewPicker.Models.PreviewConfig($scope.model.config);
+		$scope.isChildSelectorOpen = false;
 		if ($scope.config && $scope.config.startNode !== 0) {
 			$scope.children = [new previewPicker.Models.PreviewNode({contentTypeAlias: '', id: 0, name: 'Choose Node', properties: []})];
-			$scope.isChildSelectorOpen = false;
-			$scope.list = $scope.getCurrentList();
-			for (var i = 0; i < $scope.list.length; i++) {
-				$scope.addThumbnailToNode(i);
-			}
+			$scope.list = [];
 			$scope.selectedChild = new previewPicker.Models.PreviewNode({contentTypeAlias: '', id: 0, name: 'Choose Node', properties: []});
 			$scope.buildChildrenList($scope.config.startNode, $scope.config.doctype, function(children) {
-				$scope.updateList(children);
+				$scope.list = $scope.getNodesForList(children);
+				for (var i = 0; i < $scope.list.length; i++) {
+					$scope.addThumbnailToNode(i);
+				}
 			});
 		}
 	};
@@ -95,7 +69,7 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 	$scope.addNodeToList = function() {
 		if ($scope.selectedChild.id !== 0) {
 			$scope.list.push(new previewPicker.Models.PreviewNode($scope.selectedChild));
-			$scope.model.value = {list: $scope.list};
+			$scope.updateValueFromList();
 			$scope.addThumbnailToNode($scope.model.value.list.length - 1);
 			$scope.toggleChildSelector();
 			$scope.selectedChild = new previewPicker.Models.PreviewNode({contentTypeAlias: '', id: 0, name: 'Choose Node', properties: []});
@@ -108,8 +82,8 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 	* @description Deletes an item from the list of previews
 	*/
 	$scope.deleteItem = function(index) {
-		$scope.model.value.list.splice(index, 1);
-		$scope.list = $scope.model.value.list;
+		$scope.list.splice(index, 1);
+		$scope.updateValueFromList();
 	};
 
 	/**
@@ -118,7 +92,7 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 	* @description Navigate the user to the node of the selected item for editing purposes.
 	*/
 	$scope.editItem = function(index) {
-		var node = $scope.model.value.list[index];
+		var node = $scope.list[index];
 		var url = "/umbraco/#/content/content/edit/" + node.id;
 		window.location = url;
 	}
@@ -130,8 +104,8 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 	* @description Sorts an item into a new position in $scope.model.value.list.
 	*/
 	$scope.sortItem = function(index, change) {
-		$scope.model.value.list.splice((index + change), 0, $scope.model.value.list.splice(index, 1)[0]);
-		$scope.list = $scope.model.value.list;
+		$scope.list.splice((index + change), 0, $scope.list.splice(index, 1)[0]);
+		$scope.updateValueFromList();
 	};
 
 	/**
@@ -156,8 +130,7 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 			node.properties.forEach(function(property) {
 				if (property.alias == thumbnailAlias) {
 					imagePreviewResource.getImage(property.value).then(function(url) {
-						$scope.model.value.list[index].thumbnail = url.split('"')[1];
-						$scope.list = $scope.model.value.list;
+						$scope.list[index].thumbnail = url.split('"')[1];
 					})
 				}
 			});
@@ -231,15 +204,23 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 	};
 
 	/**
-	* @method getCurrentList
+	* @method getNodesForList
+	* @param {array of previewPicker.Models.PreviewNode} nodes
 	* @returns {array of previewPicker.Models.PreviewNode}
 	* @description Returns all nodes in $scope.model.value.list.
 	*/
-	$scope.getCurrentList = function() {
+	$scope.getNodesForList = function(nodes) {
 		var list = [];
 		if ($scope.model.value.list && $scope.model.value.list.length > 0) {
-			list = $scope.model.value.list.map(function(child) {
-				return new previewPicker.Models.PreviewNode(child);
+			$scope.model.value.list.forEach(function(nodeId) {
+				if (nodes && nodes.length > 0) {
+					nodes.forEach(function(node) {
+						if (node.id == nodeId) {
+							list.push(new previewPicker.Models.PreviewNode(node));
+							doesNodeExist = true;
+						}
+					});
+				}
 			});
 		}
 		return list;
@@ -260,6 +241,16 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 			}
 		}
 		return isAtMax;
+	};
+
+	$scope.updateValueFromList = function() {
+		var list = $scope.list;
+		$scope.model.value = {list: []};
+		if (list && list.length > 0) {
+			list.forEach(function(node) {
+				$scope.model.value.list.push(node.id);
+			});
+		}
 	};
 
 	// Call $scope.init() ////////////////////////////////////////////////////////
