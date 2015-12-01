@@ -70,7 +70,7 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 		if ($scope.selectedChild.id !== 0) {
 			$scope.list.push(new previewPicker.Models.PreviewNode($scope.selectedChild));
 			$scope.updateValueFromList();
-			$scope.addThumbnailToNode($scope.model.value.list.length - 1);
+			$scope.addThumbnailToNode($scope.model.value.split(",").length - 1);
 			$scope.toggleChildSelector();
 			$scope.selectedChild = new previewPicker.Models.PreviewNode({contentTypeAlias: '', id: 0, name: 'Choose Node', properties: []});
 		}
@@ -190,6 +190,25 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 							filteredProperties.push(new previewPicker.Models.PreviewProperty(property));
 						}
 					});
+					if (propertyAliases && propertyAliases.length > 0) {
+						var sortedProperties = [];
+						var imageProperty = false;
+						propertyAliases.forEach(function (propAlias) {
+							filteredProperties.forEach(function (prop) {
+								if (prop.alias.toLowerCase() === propAlias.toLowerCase()) {
+									sortedProperties.push(prop);
+								}
+								if (prop.alias.toLowerCase() === $scope.config.image.toLowerCase()) {
+									imageProperty = prop;
+								}
+							});
+						});
+						if (imageProperty) {
+							sortedProperties.push(imageProperty);
+						}
+						filteredProperties = sortedProperties;
+					}
+
 				}
 				propertyFilteredList.push(new previewPicker.Models.PreviewNode({
 					contentTypeAlias: item.contentTypeAlias,
@@ -210,19 +229,22 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 	* @description Returns all nodes in $scope.model.value.list.
 	*/
 	$scope.getNodesForList = function(nodes) {
-		var list = [];
-		if ($scope.model.value.list && $scope.model.value.list.length > 0) {
-			$scope.model.value.list.forEach(function(nodeId) {
-				if (nodes && nodes.length > 0) {
-					nodes.forEach(function(node) {
-						if (node.id == nodeId) {
-							list.push(new previewPicker.Models.PreviewNode(node));
-							doesNodeExist = true;
-						}
-					});
-				}
-			});
-		}
+	    var list = [];
+        if ($scope.model.value) {
+            var valueList = $scope.model.value.split(",");
+            if (valueList.length > 0) {
+                valueList.forEach(function (nodeId) {
+                    if (nodes && nodes.length > 0) {
+                        nodes.forEach(function (node) {
+                            if (node.id == nodeId) {
+                                list.push(new previewPicker.Models.PreviewNode(node));
+                                doesNodeExist = true;
+                            }
+                        });
+                    }
+                });
+            }
+        }
 		return list;
 	};
 
@@ -234,8 +256,8 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 	$scope.isAtMax = function() {
 		var isAtMax = false;
 		if ($scope.config.maximum > 0) {
-			if ($scope.model.value.list && $scope.model.value.list.length > 0) {
-				if ($scope.model.value.list.length > $scope.config.maximum) {
+			if ($scope.model.value && $scope.model.value.split(",").length > 0) {
+				if ($scope.model.value.split(",").length > $scope.config.maximum) {
 					isAtMax = true;
 				}
 			}
@@ -245,10 +267,13 @@ angular.module("umbraco").controller("preview.picker.editor.controller", functio
 
 	$scope.updateValueFromList = function() {
 		var list = $scope.list;
-		$scope.model.value = {list: []};
+		$scope.model.value = "";
 		if (list && list.length > 0) {
-			list.forEach(function(node) {
-				$scope.model.value.list.push(node.id);
+		    list.forEach(function (node, index) {
+                if (index != 0) {
+                    $scope.model.value += ",";
+                }
+				$scope.model.value += node.id;
 			});
 		}
 	};

@@ -4,7 +4,7 @@
 		alias: "MultiNodeTreePicker.Preview",
 		editor: {
 			view: "~/app_plugins/PreviewPicker/views/PreviewPickerEditorView.html",
-			valueType: "JSON",
+			valueType: "TEXT",
 		},
 		prevalues: {
 		    fields: [
